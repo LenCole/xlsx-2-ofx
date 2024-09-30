@@ -1,15 +1,20 @@
 import pandas as pd
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
-# Function to convert a date string to the OFX date format
+# Function to convert a date string or Excel float date to the OFX date format
 def to_ofx_date(date):
+    if pd.isna(date):  # Check for NaN
+        return ""  # Return an empty string or handle as needed
     if isinstance(date, datetime):
         return date.strftime("%Y%m%d")
+    elif isinstance(date, float):  # Excel serial date
+        # Convert Excel serial date (days since 1899-12-30) to datetime
+        date_obj = datetime(1899, 12, 30) + timedelta(days=date)
     else:
-        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        date_obj = datetime.strptime(date, "%Y-%m-%d")
     return date_obj.strftime("%Y%m%d")
 
 
